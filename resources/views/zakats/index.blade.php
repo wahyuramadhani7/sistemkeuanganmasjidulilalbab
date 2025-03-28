@@ -81,6 +81,16 @@
             </button>
         </form>
 
+        {{-- Export Button --}}
+        <div style="margin-bottom: 20px; text-align: right;">
+            <a href="{{ route('zakats.export') }}" 
+               style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 4px; display: inline-block; transition: background-color 0.3s ease;"
+               onmouseover="this.style.backgroundColor='#218838'"
+               onmouseout="this.style.backgroundColor='#28a745'">
+                Export ke Excel
+            </a>
+        </div>
+
         {{-- Zakat Table --}}
         <div style="overflow-x: auto;">
             <table style="width: 100%; border-collapse: collapse; background-color: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">

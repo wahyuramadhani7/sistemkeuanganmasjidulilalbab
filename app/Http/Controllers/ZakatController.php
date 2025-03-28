@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Zakat;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ZakatsExport;
 
 class ZakatController extends Controller
 {
@@ -18,17 +20,31 @@ class ZakatController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'donor_name' => 'required',
-            'type' => 'required|in:mal,fitrah',
-            'amount' => 'required|numeric',
-            'date' => 'required|date',
-        ]);
+        try {
+            $request->validate([
+                'donor_name' => 'required|string|max:255',
+                'type' => 'required|in:mal,fitrah',
+                'amount' => 'required|numeric|min:0',
+                'date' => 'required|date',
+            ]);
 
-        $data = $request->all();
-        $data['unit'] = $request->type === 'mal' ? 'uang' : 'beras'; // Tentukan satuan berdasarkan tipe
+            $data = $request->all();
+            $data['unit'] = $request->type === 'mal' ? 'uang' : 'beras';
 
-        Zakat::create($data);
-        return redirect()->route('zakats.index')->with('success', 'Data zakat ditambahkan.');
+            $zakat = Zakat::create($data);
+
+            if (!$zakat) {
+                throw new \Exception('Gagal menyimpan data zakat.');
+            }
+
+            return redirect()->route('zakats.index')->with('success', 'Data zakat berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function export()
+    {
+        return Excel::download(new ZakatsExport, 'data_zakat_' . date('Y-m-d') . '.xlsx');
     }
 }

@@ -29,7 +29,7 @@ class FinanceController extends Controller
     {
         $request->validate([
             'description' => 'required',
-            'raw_amount' => 'required|numeric',
+            'amount' => 'required|numeric|min:0', // Ganti raw_amount jadi amount
             'type' => 'required|in:income,expense',
             'category' => 'required|in:jumat,idul_fitri,idul_adha,lainnya',
             'date' => 'required|date',
@@ -37,7 +37,7 @@ class FinanceController extends Controller
 
         Finance::create([
             'description' => $request->description,
-            'amount' => $request->raw_amount,
+            'amount' => $request->amount, // Langsung gunakan amount
             'type' => $request->type,
             'category' => $request->category,
             'date' => $request->date,

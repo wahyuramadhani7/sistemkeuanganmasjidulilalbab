@@ -4,21 +4,22 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateFinancesTableAddCategory extends Migration
+class CreateFinancesTable extends Migration
 {
     public function up()
     {
-        Schema::table('finances', function (Blueprint $table) {
-            $table->enum('category', ['jumat', 'idul_fitri', 'idul_adha', 'lainnya'])
-                  ->default('lainnya')
-                  ->after('type'); // Kategori infak
+        Schema::create('finances', function (Blueprint $table) {
+            $table->id();
+            $table->string('description');
+            $table->bigInteger('amount');
+            $table->enum('type', ['income', 'expense']);
+            $table->date('date');
+            $table->timestamps();
         });
     }
 
     public function down()
     {
-        Schema::table('finances', function (Blueprint $table) {
-            $table->dropColumn('category');
-        });
+        Schema::dropIfExists('finances');
     }
 }

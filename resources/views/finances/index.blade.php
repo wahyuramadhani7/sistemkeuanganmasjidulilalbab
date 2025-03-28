@@ -5,7 +5,12 @@
         
         {{-- Financial Summary Cards --}}
         <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px;">
-            <div class="card" style="flex: 1; min-width: 200px; background-color: #f8f9fa; border-radius: 8px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <div class="card" style="flex: 1; min-width: 200px; background-color: #f8f9fa; border-radius: 8px; padding: 15px; box-shadow: 0 4px 6px rgbause App\Models\Finance;
+use App\Models\FinancialSummary;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\FinanceExport;
+use App\Exports\FinancialSummaryExport;px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                 <h2 style="margin-bottom: 10px; color: #666;">Total Pemasukan</h2>
                 <p style="font-size: 1.5em; color: #28a745; font-weight: bold;">{{ 'Rp ' . number_format($totalIncome, 0, ',', '.') }}</p>
             </div>
@@ -43,7 +48,7 @@
         @endif
 
         {{-- Input Form --}}
-        <form action="{{ route('finances.store') }}" method="POST" style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <form action="{{ route('finances.store') }}" method="POST" style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" id="financeForm">
             @csrf
             <input type="hidden" name="source" value="index">
             <div style="display: flex; flex-wrap: wrap; gap: 10px;">
@@ -53,8 +58,7 @@
                 </div>
                 <div class="form-group" style="flex: 1; min-width: 100px;">
                     <label style="display: block; margin-bottom: 5px;">Jumlah (Rp)</label>
-                    <input type="text" name="amount" id="amount" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" onkeyup="formatRupiah(this)">
-                    <input type="hidden" name="raw_amount" id="raw_amount">
+                    <input type="number" name="amount" id="amount" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" min="0">
                 </div>
                 <div class="form-group" style="flex: 1; min-width: 100px;">
                     <label style="display: block; margin-bottom: 5px;">Tipe</label>
@@ -74,7 +78,7 @@
                 </div>
                 <div class="form-group" style="flex: 1; min-width: 100px;">
                     <label style="display: block; margin-bottom: 5px;">Tanggal</label>
-                    <input type="date" name="date" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    <input type="date" name="date" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" value="{{ date('Y-m-d') }}">
                 </div>
             </div>
             <button type="submit" class="btn" style="width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; margin-top: 15px; cursor: pointer;">
@@ -130,16 +134,4 @@
             </table>
         </div>
     </div>
-
-    @push('scripts')
-    <script>
-        function formatRupiah(input) {
-            let value = input.value;
-            value = value.replace(/[^0-9]/g, '');
-            let formatted = new Intl.NumberFormat('id-ID').format(value);
-            input.value = formatted;
-            document.getElementById('raw_amount').value = value;
-        }
-    </script>
-    @endpush
 @endsection
